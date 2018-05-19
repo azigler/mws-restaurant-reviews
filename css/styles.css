@@ -53,11 +53,11 @@ nav,
 section {
 	display: block;
 }
-#maincontent {
+main {
   background-color: #f3f3f3;
   min-height: 100%;
 }
-#footer {
+footer {
   background-color: #444;
   color: #aaa;
   font-size: 8pt;
@@ -220,7 +220,7 @@ nav h1 a {
   height: 100%;
   width: 100%;
 }
-.inside #footer {
+.inside footer {
   bottom: 0;
   position: absolute;
   width: 50%;
