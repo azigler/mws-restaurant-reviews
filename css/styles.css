@@ -192,6 +192,7 @@ nav h1 a {
 }
 #restaurants-list .restaurant-img {
   background-color: #ccc;
+  border-radius: 5px;
   display: block;
   margin: 0;
   max-width: 100%;
@@ -258,7 +259,8 @@ nav h1 a {
   line-height: 1.1;
 }
 #restaurant-img {
-	width: 90%;
+  width: 90%;
+  border-radius: 15px;
 }
 #restaurant-address {
   font-size: 14pt;
