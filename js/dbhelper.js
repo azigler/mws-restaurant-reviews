@@ -175,3 +175,17 @@ class DBHelper {
   }
 
 }
+
+/**
+ * Register the service worker.
+ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js')
+      .then(function(registration) {
+        console.log(`Service worker registered successfully with scope: ${registration.scope}`);
+      }).catch(function(error) {
+        console.log(`Service worker failed to register: ${error}`);
+      })
+  });
+}
