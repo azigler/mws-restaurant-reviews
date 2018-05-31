@@ -51,18 +51,21 @@ self.addEventListener('activate', function (event) {
 self.addEventListener('fetch', function(event) {
   // Don't cache bloated Google Maps files
   if((event.request.url.indexOf('googleapis') == -1)
-    && (event.request.url.indexOf('gstatic') == -1)) {
-    console.log(`FETCH: ${event.request.url}`);
+  && (event.request.url.indexOf('gstatic') == -1)) {
+    // Remove query string from URL
+    const cleanedURL = event.request.url.replace(/[\\?].*/g,'');
+    
+    console.log(`FETCH: ${cleanedURL}`);
     event.respondWith(
-      caches.match(event.request).then(function(response) {
+      caches.match(cleanedURL).then(function(response) {
         if (response) {
-          console.log(`Retrieving ${event.request.url} from cache...`);
+          console.log(`Retrieving ${cleanedURL} from cache...`);
           return response;
         }
-        console.log(`Requesting ${event.request.url} from network...`);
-        return fetch(event.request).then(function(response) {
+        console.log(`Requesting ${cleanedURL} from network...`);
+        return fetch(cleanedURL).then(function(response) {
           return caches.open(cacheName).then(function(cache) {
-            cache.put(event.request.url, response.clone());
+            cache.put(cleanedURL, response.clone());
             return response;
           });
         });
