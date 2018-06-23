@@ -59,6 +59,7 @@ main {
 }
 footer {
   background-color: #444444;
+  font-family: Arial, Helvetica, sans-serif;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23aaaaaa' fill-opacity='0.15' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
   color: #aaa;
   font-size: 8pt;
@@ -216,7 +217,7 @@ nav h1 a {
   background-color: #ffa500;
   border-bottom: 3px solid #eee;
   border-radius: 8px;
-  color: #fff;
+  color: #292929;
   display: inline-block;
   font-size: 10pt;
   margin: 15px 0 0;
@@ -250,7 +251,7 @@ nav h1 a {
   bottom: 0;
   position: absolute;
   width: 100%;
-  padding: 10px
+  padding: 10px;
 }
 #restaurant-name {
   color: #d47200;
