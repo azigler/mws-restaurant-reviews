@@ -67,8 +67,17 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+
+  // add favorite button
+  DBHelper.createFavButton(document.getElementById('favButton'));
+
   // fill reviews
   fillReviewsHTML();
+
+  // add review form
+  const reviewForm = document.getElementById('reviewForm');
+  reviewForm.className ='review-form';
+  reviewForm.innerHTML = 'REVIEW FORM';
 }
 
 /**

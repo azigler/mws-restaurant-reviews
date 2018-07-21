@@ -229,6 +229,17 @@ class DBHelper {
     return marker;
   }
 
+  /**
+   * Favorite button.
+   */
+  static createFavButton(element) {
+    const favButton = element;
+    favButton.className ='fav-button';
+    favButton.innerHTML = '☆';
+    favButton.setAttribute('role', 'button');
+    return favButton;
+  }
+
 }
 
 /**
