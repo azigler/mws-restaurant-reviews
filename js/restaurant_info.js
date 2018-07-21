@@ -68,16 +68,20 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
 
+  const restaurantContainer = document.getElementById('restaurant-container');
+
   // add favorite button
-  DBHelper.createFavButton(document.getElementById('favButton'));
+  const favButton = DBHelper.createFavButton(document.createElement('div'));
+  restaurantContainer.append(favButton);
 
   // fill reviews
   fillReviewsHTML();
 
   // add review form
-  const reviewForm = document.getElementById('reviewForm');
+  const reviewForm = document.createElement('div');
   reviewForm.className ='review-form';
   reviewForm.innerHTML = 'REVIEW FORM';
+  restaurantContainer.append(reviewForm);
 }
 
 /**
