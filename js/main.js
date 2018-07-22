@@ -165,7 +165,7 @@ createRestaurantHTML = (restaurant) => {
   li.append(more)
 
   // add favorite button
-  const favButton = DBHelper.createFavButton(document.createElement('div'));
+  const favButton = DBHelper.createFavButton(document.createElement('button'));
   li.append(favButton);
 
   return li

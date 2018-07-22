@@ -236,7 +236,6 @@ class DBHelper {
     const favButton = element;
     favButton.className ='fav-button';
     favButton.innerHTML = '☆';
-    favButton.setAttribute('role', 'button');
     return favButton;
   }
 
