@@ -235,6 +235,7 @@ class DBHelper {
   static createFavButton(element) {
     const favButton = element;
     favButton.className ='fav-button';
+    favButton.setAttribute('type', 'button');
     favButton.innerHTML = '☆';
     favButton.onclick = () => {
       if (favButton.classList.length === 1) {

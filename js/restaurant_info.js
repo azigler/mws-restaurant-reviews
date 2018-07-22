@@ -80,12 +80,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   // review form toggle button
   const reviewFormToggle = document.createElement('button');
   reviewFormToggle.className = 'review-form-toggle';
+  reviewFormToggle.setAttribute('type', 'button');
   reviewFormToggle.innerHTML = 'Leave a Review';
   restaurantContainer.append(reviewFormToggle);
   reviewFormToggle.onclick = () => {
     // create review form
     if (document.getElementsByClassName('review-form').length === 0) {
       reviewFormToggle.innerHTML = 'Nevermind?';
+      reviewFormToggle.setAttribute('type', 'reset');
       reviewFormToggle.className = reviewFormToggle.classList + ' on';
       reviewForm = document.createElement('div');
       reviewForm.className ='review-form';
@@ -140,6 +142,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
       // ** review form button
       const RF_submitButton = document.createElement('button');
+      RF_submitButton.setAttribute('type', 'submit');
       RF_submitButton.className = 'review-form-submit';
       RF_submitButton.innerHTML = 'Submit';
 
@@ -155,6 +158,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     } else {
       reviewFormToggle.innerHTML = 'Leave a Review';
       reviewFormToggle.className = 'review-form-toggle';
+      reviewFormToggle.setAttribute('type', 'button');
       // otherwise, remove from DOM
       const element = document.getElementsByClassName('review-form')[0];
       element.parentNode.removeChild(element);
