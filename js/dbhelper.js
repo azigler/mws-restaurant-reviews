@@ -236,6 +236,15 @@ class DBHelper {
     const favButton = element;
     favButton.className ='fav-button';
     favButton.innerHTML = '☆';
+    favButton.onclick = () => {
+      if (favButton.classList.length === 1) {
+        favButton.innerHTML = '★';
+        favButton.className = favButton.classList + ' fav';
+      } else {
+        favButton.className ='fav-button';
+        favButton.innerHTML = '☆';
+      }
+    }
     return favButton;
   }
 

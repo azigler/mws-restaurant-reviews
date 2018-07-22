@@ -68,13 +68,11 @@ footer {
   text-align: center;
   text-transform: uppercase;
 }
-/* ====================== Favorite Button ====================== */
-div.fav-button {
-  border-bottom: 3px solid #eee;
+button {
   border-radius: 8px;
   color: #292929;
   display: inline-block;
-  margin: 15px 0 0;
+  margin: 5px 10px;
   font-size: 10pt;
   padding: 8px 30px 10px;
   text-align: center;
@@ -83,9 +81,52 @@ div.fav-button {
   background-color: #fbf4eb;
   transition: all 0.5s;
 }
+button:hover {
+  cursor: pointer;
+}
+/* ====================== Favorite Button ====================== */
+button.fav-button {
+  width: 75px;
+}
+button.fav-button.fav {
+  background-color: #ffa500;
+  color: yellow;
+}
 /* ====================== Review Form ====================== */
+button.review-form-toggle,
+button.review-form-submit {
+  background-color: #ffa500;
+}
+button.review-form-submit {
+  text-align: center;
+  width: -webkit-fill-available;
+}
+button.review-form-toggle.on {
+  background-color: #3397db;
+  color: #fff;
+}
 div.review-form {
-  color: red;
+  text-align: left;
+  width: fit-content;
+  margin: 0 auto;
+  border: 2px #3396dc solid;
+  border-radius: 5px;
+  padding: 14px;
+  margin-top: 5px;
+  background-color: #d9efff;
+}
+.review-form h3 {
+  text-align: center;
+}
+.review-form #ratingSelect {
+  background-color: #fff;
+}
+.review-form textarea {
+  width: -webkit-fill-available;
+}
+.review-form input,
+.review-form select {
+  width: -webkit-fill-available;
 }
 /* ====================== Navigation ====================== */
 nav {
@@ -233,10 +274,8 @@ nav h1 a {
   font-size: 11pt;
 }
 #restaurants-list li a,
-#restaurants-list li div {
-  border-bottom: 3px solid #eee;
+#restaurants-list li button {
   border-radius: 8px;
-  color: #292929;
   display: inline-block;
   margin: 15px 0 0;
   font-size: 10pt;
@@ -247,13 +286,15 @@ nav h1 a {
 }
 #restaurants-list li a.view-details {
   float: left;
+  color: #292929;
   transition: all 1s;
   background-color: #ffa500;
 }
 #restaurants-list li a.view-details:hover {
   background-color: #3397db;
+  color: #fff;
 }
-#restaurants-list div.fav-button {
+#restaurants-list button.fav-button {
   float: right;
 }
 
