@@ -15,7 +15,6 @@ window.initMap = () => {
         scrollwheel: false
       });
       fillBreadcrumb();
-      DBHelper.fetchAllRestaurantReviews();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
@@ -199,8 +198,9 @@ fillReviewsHTML = () => {
   DBHelper.fetchRestaurantReviews(self.restaurant.id)
     .then(data => {
       reviews = self.orderByDate(data, 'createdAt');
-      if (!reviews) {
+      if (reviews.length === 0) {
         const noReviews = document.createElement('p');
+        noReviews.className = 'no-reviews-yet';
         noReviews.innerHTML = 'No reviews yet!';
         container.appendChild(noReviews);
         return;
