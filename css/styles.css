@@ -357,6 +357,9 @@ nav h1 a {
   padding: 30px 40px 80px;
   text-align: center;
 }
+#reviews-container .no-reviews-yet {
+  font-size: 16pt;
+}
 #reviews-container h3 {
   color: #d47200;
   font-size: 24pt;
