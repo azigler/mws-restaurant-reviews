@@ -59,14 +59,29 @@ class DBHelper {
     });
   }
 
-  static saveFromAPI(type){
-    return fetch(DBHelper.RESTAURANTS_URL)
-      .then(function(response){
-        return response.json();
-    }).then(items => {
+  static saveFromAPI(type) {
+    function saveData (items) {
       DBHelper.saveToDatabase(items, type);
       return items;
-    });
+    }
+    if (type == 'restaurants') {
+      return fetch(DBHelper.RESTAURANTS_URL)
+        .then(response => {
+          return response.json()
+        })
+        .then(response => {
+          saveData(response)
+        });
+    }
+    if (type == 'reviews') {
+      return fetch(DBHelper.REVIEWS_URL)
+        .then(response => {
+          return response.json()
+        })
+        .then(response => {
+          saveData(response)
+        });
+    }
   }
 
   /**
