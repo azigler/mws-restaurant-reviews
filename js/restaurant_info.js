@@ -15,6 +15,7 @@ window.initMap = () => {
         scrollwheel: false
       });
       fillBreadcrumb();
+      DBHelper.fetchAllRestaurantReviews();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
@@ -189,53 +190,70 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = () => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
-
-  if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
-    return;
-  }
+  let reviews = [];
   const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
-  });
-  container.appendChild(ul);
-}
+  ul.innerHTML = '';
+
+  DBHelper.fetchRestaurantReviews(self.restaurant.id)
+    .then(data => {
+      reviews = self.orderByDate(data, 'createdAt');
+      if (!reviews) {
+        const noReviews = document.createElement('p');
+        noReviews.innerHTML = 'No reviews yet!';
+        container.appendChild(noReviews);
+        return;
+      }
+      reviews.forEach(review => {
+        ul.appendChild(createReviewHTML(review));
+      });
+      container.appendChild(ul);
+    })
+    .catch(err => console.error(err));
+};
 
 /**
  * Create review HTML and add it to the webpage.
  */
 createReviewHTML = (review) => {
   const li = document.createElement('li');
+  
+  // Reviewer's name
   const name = document.createElement('p');
+  name.className = 'review-name';
   name.innerHTML = review.name;
   li.appendChild(name);
 
+  // Review date
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  const updated = new Date(review.updatedAt).toDateString().split(' ');
+  date.innerHTML = updated[1] + ' ' + updated[2] + ', ' + updated[3];
+  date.className = 'review-date';
   li.appendChild(date);
 
+  // Reviewer's rating
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
+  rating.className = 'review-rating';
   li.appendChild(rating);
 
-  const comments = document.createElement('p');
-  comments.innerHTML = review.comments;
-  li.appendChild(comments);
+  // Reviewer's comments, also allows
+  // reviews without comments (just ratings)
+  if (review.comments) {
+    const comments = document.createElement('p');
+    comments.innerHTML = review.comments;
+    li.appendChild(comments);
+  }
 
+  // Return the constructured review object
   return li;
 }
 
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = (restaurant=self.restaurant) => {
+fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
@@ -257,3 +275,10 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+// Helper function for ordering reviews by date
+orderByDate = (arr, dateProp) => {
+  return arr.slice().sort(function(a, b) {
+    return arr[dateProp] < b[dateProp] ? -1 : 1;
+  });
+};
