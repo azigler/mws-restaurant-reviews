@@ -71,7 +71,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const restaurantContainer = document.getElementById('restaurant-container');
 
   // add favorite button
-  const favButton = DBHelper.createFavButton(document.createElement('button'));
+  const favButton = DBHelper.createFavButton(document.createElement('button'), restaurant.id);
   restaurantContainer.append(favButton);
 
   // fill reviews

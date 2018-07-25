@@ -9,6 +9,7 @@ var markers = []
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   DBHelper.fetchAllRestaurantReviews();
+  DBHelper.fetchAllFavorites();
   fetchNeighborhoods();
   fetchCuisines();
 });
@@ -166,7 +167,7 @@ createRestaurantHTML = (restaurant) => {
   li.append(more)
 
   // add favorite button
-  const favButton = DBHelper.createFavButton(document.createElement('button'));
+  const favButton = DBHelper.createFavButton(document.createElement('button'), restaurant.id);
   li.append(favButton);
 
   return li

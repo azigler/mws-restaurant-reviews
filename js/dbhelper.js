@@ -4,7 +4,7 @@
 class DBHelper {
 
   /**
-   * Database URL for restaurants server.
+   * Database URL for restaurants.
    */
   static get RESTAURANTS_URL() {
     const port = 1337
@@ -12,11 +12,19 @@ class DBHelper {
   }
 
   /**
-   * Database URL for reviews server.
+   * Database URL for reviews.
    */
   static get REVIEWS_URL() {
     const port = 1337;
     return `http://localhost:${port}/reviews`;
+  }
+
+  /**
+   * Database URL for favorites.
+   */
+  static get FAVORITES_URL() {
+    const port = 1337;
+    return `http://localhost:${port}/restaurants/?is_favorite=true`;
   }
 
   static openDatabase(type) {
@@ -59,10 +67,24 @@ class DBHelper {
     });
   }
 
+  static removeFromDB(data, type) {
+    return DBHelper.openDatabase(type).then(function(db){
+      /* stop if idb isn't supported */
+      if(!db) return;
+
+      const tx = db.transaction(type, 'readwrite');
+      const store = tx.objectStore(type);
+      data.forEach(function(item){
+        store.delete(item.id);
+      });
+      return tx.complete;
+    });
+  }
+
   static saveFromAPI(type) {
     function saveData (items) {
       DBHelper.saveToDatabase(items, type);
-      return items;
+      return Promise.resolve(items);
     }
     if (type == 'restaurants') {
       return fetch(DBHelper.RESTAURANTS_URL)
@@ -81,6 +103,15 @@ class DBHelper {
         .then(response => {
           saveData(response)
         });
+      }
+    if (type == 'favorites') {
+      return fetch(DBHelper.FAVORITES_URL)
+        .then(response => {
+          return response.json()
+        })
+        .then(response => {
+          saveData(response)
+        });
     }
   }
 
@@ -89,10 +120,36 @@ class DBHelper {
    */
   static fetchAllRestaurantReviews() {
     return DBHelper.getDB('reviews').then(reviews => {
-      if(reviews.length) {
+      if (reviews.length) {
         return Promise.resolve(reviews);
       } else {
         return DBHelper.saveFromAPI('reviews');
+      }
+    }).catch(err => console.error(err));
+  }
+
+  /**
+   * Fetch all favorites.
+   */
+  static fetchAllFavorites() {
+    return DBHelper.getDB('favorites').then(favs => {
+      if (favs.length) {
+        return Promise.resolve(favs);
+      } else {
+        return DBHelper.saveFromAPI('favorites');
+      }
+    }).catch(err => console.error(err));
+  }
+
+  /**
+   * Returns true if favorited.
+   */
+  static isFavorite(id) {
+    return DBHelper.getDB('favorites').then(favs => {
+      if (favs.filter(r => r.id == id).length == 1) {
+        return Promise.resolve(true);
+      } else {
+        return Promise.resolve(false);
       }
     }).catch(err => console.error(err));
   }
@@ -105,6 +162,48 @@ class DBHelper {
       // Filter reviews by the restaurant id
       return Promise.resolve(reviews.filter(r => r.restaurant_id == id));
     })
+  }
+
+  /**
+   * Toggle if restaurant id is favorited locally.
+   */
+  static toggleFavorite(id) {
+    // Filter favorites by the restaurant id
+    return DBHelper.isFavorite(id).then(status => {
+      if (status == true) {
+        DBHelper.updateFavoriteOnServer(id, false);
+
+        DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+          const arr = [restaurant];
+          DBHelper.removeFromDB(arr, 'favorites');
+          if (!restaurant) {
+            console.error(error);
+            return;
+          }
+        });
+      } else {
+        DBHelper.updateFavoriteOnServer(id, true);
+
+        DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+          const arr = [restaurant];
+          DBHelper.saveToDatabase(arr, 'favorites');
+          if (!restaurant) {
+            console.error(error);
+            return;
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Toggle restaurant id favorite on server.
+   */
+  static updateFavoriteOnServer(id, fav) {
+    console.log(`toggling ${id} to ${fav}`);
+    fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=${fav}`, {
+      method: 'post',
+    }).catch(err => console.error(err));
   }
 
   /**
@@ -145,7 +244,7 @@ class DBHelper {
    * Fetch restaurants by a cuisine type with proper error handling.
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
-    // Fetch all restaurants  with proper error handling
+    // Fetch all restaurants with proper error handling
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
@@ -274,12 +373,23 @@ class DBHelper {
   /**
    * Favorite button.
    */
-  static createFavButton(element) {
+  static createFavButton(element, id) {
     const favButton = element;
     favButton.className ='fav-button';
     favButton.setAttribute('type', 'button');
     favButton.innerHTML = '☆';
+    favButton.dataset.id = id;
+
+    DBHelper.isFavorite(id).then(status => {
+      if (status == true) {
+        favButton.className = favButton.classList + ' fav';
+        favButton.innerHTML = '★';
+      }
+    });
+
     favButton.onclick = () => {
+      DBHelper.toggleFavorite(favButton.dataset.id);
+      
       if (favButton.classList.length === 1) {
         favButton.innerHTML = '★';
         favButton.className = favButton.classList + ' fav';
