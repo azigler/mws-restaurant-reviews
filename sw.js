@@ -53,8 +53,8 @@ self.addEventListener('fetch', function(event) {
   // Don't cache bloated Google Maps files
   if((event.request.url.indexOf('googleapis') == -1)
   && (event.request.url.indexOf('gstatic') == -1)
-  // Don't cache reviews JSON
-  && (event.request.url.indexOf('reviews')) == -1) {
+  // Don't cache API endpoints
+  && (event.request.url.indexOf('localhost:1337')) == -1) {
     // Remove query string from URL
     const cleanedURL = event.request.url.replace(/[\\?].*/g,'');
     
