@@ -10,6 +10,7 @@ var markers = []
 document.addEventListener('DOMContentLoaded', (event) => {
   DBHelper.fetchAllRestaurantReviews();
   DBHelper.fetchAllFavorites();
+  DBHelper.sync();
   fetchNeighborhoods();
   fetchCuisines();
 });

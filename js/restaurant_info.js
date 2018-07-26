@@ -15,6 +15,9 @@ window.initMap = () => {
         scrollwheel: false
       });
       fillBreadcrumb();
+      DBHelper.fetchAllRestaurantReviews();
+      DBHelper.fetchAllFavorites();
+      DBHelper.sync();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
@@ -145,6 +148,17 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
       RF_submitButton.setAttribute('type', 'submit');
       RF_submitButton.className = 'review-form-submit';
       RF_submitButton.innerHTML = 'Submit';
+      RF_submitButton.onclick = () => {
+        // convert form to object
+        convertFormToObj().then(data => {
+          // stage new review object for posting
+          DBHelper.stageReviewForPosting(data);
+          DBHelper.sync(data);
+        });
+
+        // reset review form
+        location.reload();
+      }
 
       // ** build review form
       reviewForm.append(RF_title);
@@ -164,6 +178,31 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
       element.parentNode.removeChild(element);
     }
   };
+}
+
+/**
+ * Convert user review form to JS object.
+ */
+convertFormToObj = (restaurant = self.restaurant) => {
+  /* SCHEMA:
+    {
+      "restaurant_id": <restaurant_id>,
+      "name": <reviewer_name>,
+      "rating": <rating>,
+      "comments": <comment_text>
+    }
+  */
+
+  const rating = document.getElementById('ratingSelect');
+  const review = {
+    "restaurant_id" : restaurant.id,
+    "name" : document.getElementById('nameInput').value,
+    "rating" : rating.options[rating.selectedIndex].value,
+    "comments" : document.getElementById('commentInput').value,
+    "id" : Math.floor(Math.random() * 10000) + 10000
+  };
+  return Promise.resolve(review);
+  
 }
 
 /**
@@ -227,8 +266,7 @@ createReviewHTML = (review) => {
 
   // Review date
   const date = document.createElement('p');
-  const updated = new Date(review.updatedAt).toDateString().split(' ');
-  date.innerHTML = updated[1] + ' ' + updated[2] + ', ' + updated[3];
+  date.innerHTML = moment(review.updatedAt).format("MMM DD, YYYY");
   date.className = 'review-date';
   li.appendChild(date);
 

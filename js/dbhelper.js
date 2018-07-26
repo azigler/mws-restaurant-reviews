@@ -165,6 +165,52 @@ class DBHelper {
   }
 
   /**
+   * Fetch a particular restaurant's reviews.
+   */
+  static stageReviewForPosting(data) {
+    return DBHelper.openDatabase('reviews-stash').then(function(db){
+      /* stop if idb isn't supported */
+      if(!db) return;
+
+      const arr = [data];
+      DBHelper.saveToDatabase(arr, 'reviews');
+
+      const tx = db.transaction('reviews-stash', 'readwrite');
+      const store = tx.objectStore('reviews-stash');
+
+      console.log(`staging ${JSON.stringify(data)} for posting...`);
+      store.put(data).catch(err => console.error(err));
+      return tx.complete;
+    });
+  }
+
+  /**
+   * Sync any staged reviews to server.
+   */
+  static sync(item) {
+    return DBHelper.getDB('reviews-stash').then(reviews => {
+      if (reviews.length) {
+        reviews.forEach(function(item){
+          let json = JSON.stringify(item);
+          console.log(`submitting ${json} to server...`);
+          fetch(DBHelper.REVIEWS_URL, {
+            method: 'post',
+            body: JSON.stringify(item)
+          }).then(res => {
+            const obj = {
+              id : item.id
+            }
+            DBHelper.removeFromDB([obj], 'reviews-stash');
+          })
+          .catch(err => console.error(err));
+        });
+      } else {
+        console.log('nothing to sync!');
+      }
+    });
+  }
+
+  /**
    * Toggle if restaurant id is favorited locally.
    */
   static toggleFavorite(id) {
