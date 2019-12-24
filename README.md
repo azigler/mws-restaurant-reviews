@@ -1,3 +1,5 @@
+![](https://repository-images.githubusercontent.com/133305090/66aade00-264e-11ea-99f1-764083d5fea1)
+
 # Udacity Mobile Web Specialist Certification
 ---
 #### _Restaurant Reviews - FINAL PROJECT_
